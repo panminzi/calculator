@@ -3,5 +3,7 @@
         <file>images/icon_history.png</file>
         <file>images/icon_menu.png</file>
         <file>images/icon_clearup.png</file>
+        <file>images/icon_scientific.png</file>
+        <file>images/icon_standard.png</file>
     </qresource>
 </RCC>

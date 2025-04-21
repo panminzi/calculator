@@ -31,6 +31,7 @@ private slots:
     void backspaceClicked();
     void clearExpression();
     void toggleHistoryWindow();
+    void toggleSideBar();
     void handleModeChange(const QString& mode);  // 新增模式处理槽函数
     //void updateHistoryDisplay();
 
@@ -50,8 +51,10 @@ private:
     void setupStandardUI();     // 标准模式界面
     void setupScientificUI();   // 科学模式界面（占位实现）
     void clearCurrentUI();      // 清理当前界面
+    void setupModules();
 
-    TopBar* m_topBar;
+    Sidebar* m_pSideBar;
+    TopBar* m_pTopBar;
     HistoryPopup* m_historyPopup;
     HistoryManager m_historyManager;
     QTextEdit* m_pDisplay;

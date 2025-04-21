@@ -13,6 +13,7 @@ Calculator::Calculator(QWidget* parent)
     : QWidget(parent)
 {
     setupUI();
+    setupModules();
     createButtons();
     connectSignals();
 }
@@ -21,12 +22,14 @@ void Calculator::setupUI()
 {
     // 主布局
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(5, 5, 5, 5);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(5);
 
+    m_pSideBar = new Sidebar(this);
+    m_pSideBar->move(-m_pSideBar->width(), 0);
     // 顶部工具栏
-    m_topBar = new TopBar(this);
-    mainLayout->addWidget(m_topBar);
+    m_pTopBar = new TopBar(m_pSideBar,this);
+    mainLayout->addWidget(m_pTopBar,1);
 
     // 显示区域
     m_pDisplay = new QTextEdit;
@@ -105,7 +108,8 @@ QPushButton* Calculator::createButton(const QString& text, const char* member)
 void Calculator::connectSignals()
 {
     // 顶部工具栏信号
-    connect(m_topBar, &TopBar::historyClicked, this, &Calculator::toggleHistoryWindow);
+    connect(m_pTopBar, &TopBar::historyClicked, this, &Calculator::toggleHistoryWindow);
+    connect(m_pTopBar, &TopBar::showModeMenu, this, &Calculator::toggleSideBar);
 
     // 历史弹窗信号
     connect(m_historyPopup, &HistoryPopup::closed, [this] { m_overlay->hide(); });
@@ -115,8 +119,12 @@ void Calculator::connectSignals()
     connect(&m_historyManager, &HistoryManager::historyChanged, this, [this] {
         m_historyPopup->updateHistory(m_historyManager.history());
         });
+
+    connect(m_pSideBar, &Sidebar::itemClicked, this, &Calculator::handleModeChange);
+    connect(m_pSideBar, &Sidebar::closed, [this] { /* 可添加关闭后操作 */ });
     // 连接新模式信号
-    connect(m_topBar, &TopBar::modeChanged, this, &Calculator::handleModeChange);
+     //   connect(m_pSideBar, &Sidebar::itemClicked,
+     //       this, &Calculator::handleModeChange);
 }
 
 // 核心计算逻辑 -------------------------------------------------
@@ -294,7 +302,12 @@ void Calculator::calculateStep(QStack<double>& nums, QStack<QChar>& ops)
         break;
     }
 }
-
+void Calculator::updatePopupLayout()
+{
+    QRect rect = geometry();
+    rect.setTop(rect.bottom() - height() / 2);
+    m_historyPopup->setGeometry(rect);
+}
 // 界面相关方法 -------------------------------------------------
 void Calculator::resizeEvent(QResizeEvent* event)
 {
@@ -324,23 +337,23 @@ void Calculator::resizeEvent(QResizeEvent* event)
     btnFont.setPixelSize(qMax(12, baseSize));
     QList<QPushButton*> buttons = findChildren<QPushButton*>();
     foreach(QPushButton * btn, buttons) {
-        if (btn != m_topBar->historyButton())
+        if (btn != m_pTopBar->historyButton())
             btn->setFont(btnFont);
     }
 
-    // 调整历史按钮
+   
     const int btnSize = qMax(24, baseSize * 2);
-    m_topBar->updateButtonSize(btnSize);
+    m_pTopBar->updateButtonSize(btnSize);
 
     // 更新弹窗位置
     updatePopupLayout();
-}
 
-void Calculator::updatePopupLayout()
-{
-    QRect rect = geometry();
-    rect.setTop(rect.bottom() - height() / 2);
-    m_historyPopup->setGeometry(rect);
+  // 同步更新侧边栏尺寸
+    if (m_pSideBar) {
+        const int sidebarWidth = width() * 0.3;
+        m_pSideBar->setFixedSize(sidebarWidth, height());
+        m_pSideBar->move(m_pSideBar->isVisible() ? 0 : -sidebarWidth, 0);
+    }
 }
 
 bool Calculator::eventFilter(QObject* obj, QEvent* event)
@@ -361,6 +374,14 @@ void Calculator::toggleHistoryWindow()
     m_overlay->show();
     m_historyPopup->raise();
     m_historyPopup->showPopup();
+}
+void Calculator::toggleSideBar()
+{
+    m_pSideBar->updateGeometry();
+    m_pSideBar->updatePosition();
+    m_pSideBar->raise();
+    m_pSideBar->show();
+    m_historyPopup->updateHistory(m_historyManager.history());
 }
 
 // 运算符判断辅助方法 --------------------------------------------
@@ -439,3 +460,16 @@ void Calculator::clearCurrentUI()
         delete item;
     }
 }
+void Calculator::setupModules()
+{
+    // 先创建侧边栏
+    m_pSideBar = new Sidebar(this);
+    m_pSideBar->addMenuItem(u8"标准", QIcon(":/calculator/images/icon_standard.png"));
+    m_pSideBar->addMenuItem(u8"科学", QIcon(":/calculator/images/icon_scientific.png"));
+
+    // 连接信号
+    connect(m_pSideBar, &Sidebar::itemClicked,
+        this, &Calculator::handleModeChange);
+}
+
+
