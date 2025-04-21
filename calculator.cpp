@@ -1,4 +1,4 @@
-#include "calculator.h"
+ï»¿#include "calculator.h"
 #include <QGridLayout>
 #include <QFont>
 #include <QPushButton>
@@ -19,34 +19,34 @@ Calculator::Calculator(QWidget* parent)
 
 void Calculator::setupUI()
 {
-    // Ö÷²¼¾Ö
+    // ä¸»å¸ƒå±€
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(5, 5, 5, 5);
     mainLayout->setSpacing(5);
 
-    // ¶¥²¿¹¤¾ßÀ¸
+    // é¡¶éƒ¨å·¥å…·æ 
     m_topBar = new TopBar(this);
     mainLayout->addWidget(m_topBar);
 
-    // ÏÔÊ¾ÇøÓò
+    // æ˜¾ç¤ºåŒºåŸŸ
     m_pDisplay = new QTextEdit;
     m_pDisplay->setReadOnly(true);
     m_pDisplay->setAlignment(Qt::AlignRight);
     mainLayout->addWidget(m_pDisplay, 2);
 
-    // °´Å¥Íø¸ñ²¼¾Ö
+    // æŒ‰é’®ç½‘æ ¼å¸ƒå±€
     m_pButtonLayout = new QGridLayout;
     m_pButtonLayout->setSpacing(3);
     mainLayout->addLayout(m_pButtonLayout, 7);
 
-    // ÃÉ²ãÉèÖÃ
+    // è’™å±‚è®¾ç½®
     m_overlay = new QWidget(this);
     m_overlay->setStyleSheet("background: rgba(0,0,0,0.3);");
     m_overlay->hide();
     m_overlay->installEventFilter(this);
     m_overlay->setAttribute(Qt::WA_TransparentForMouseEvents, false);
 
-    // ÀúÊ·µ¯´°
+    // å†å²å¼¹çª—
     m_historyPopup = new HistoryPopup(this);
     m_overlay->stackUnder(m_historyPopup);
 }
@@ -87,7 +87,7 @@ void Calculator::createButtons()
         }
     }
 
-    // ÉèÖÃ°´Å¥À­Éì±ÈÀı
+    // è®¾ç½®æŒ‰é’®æ‹‰ä¼¸æ¯”ä¾‹
     for (int i = 0; i < 4; ++i)
         m_pButtonLayout->setRowStretch(i, 1);
     for (int i = 0; i < 5; ++i)
@@ -104,20 +104,22 @@ QPushButton* Calculator::createButton(const QString& text, const char* member)
 
 void Calculator::connectSignals()
 {
-    // ¶¥²¿¹¤¾ßÀ¸ĞÅºÅ
+    // é¡¶éƒ¨å·¥å…·æ ä¿¡å·
     connect(m_topBar, &TopBar::historyClicked, this, &Calculator::toggleHistoryWindow);
 
-    // ÀúÊ·µ¯´°ĞÅºÅ
+    // å†å²å¼¹çª—ä¿¡å·
     connect(m_historyPopup, &HistoryPopup::closed, [this] { m_overlay->hide(); });
     connect(m_historyPopup, &HistoryPopup::clearRequested, &m_historyManager, &HistoryManager::clear);
 
-    // ÀúÊ·¹ÜÀíĞÅºÅ
+    // å†å²ç®¡ç†ä¿¡å·
     connect(&m_historyManager, &HistoryManager::historyChanged, this, [this] {
         m_historyPopup->updateHistory(m_historyManager.history());
         });
+    // è¿æ¥æ–°æ¨¡å¼ä¿¡å·
+    connect(m_topBar, &TopBar::modeChanged, this, &Calculator::handleModeChange);
 }
 
-// ºËĞÄ¼ÆËãÂß¼­ -------------------------------------------------
+// æ ¸å¿ƒè®¡ç®—é€»è¾‘ -------------------------------------------------
 void Calculator::digitClicked()
 {
     if (m_hasCalcError) resetAfterError();
@@ -163,14 +165,14 @@ void Calculator::equalClicked()
     double result = evaluateExpression(m_expression);
     if (m_hasCalcError)
     {
-        QMessageBox::warning(this, u8"´íÎó", m_calcErrorMsg, QMessageBox::Ok);
+        QMessageBox::warning(this, u8"é”™è¯¯", m_calcErrorMsg, QMessageBox::Ok);
         m_pDisplay->setStyleSheet("QTextEdit { color: red; }");
-        m_expression = m_lastValidExpression; // »Ö¸´Ô­Ê¼±í´ïÊ½
+        m_expression = m_lastValidExpression; // æ¢å¤åŸå§‹è¡¨è¾¾å¼
         m_pDisplay->setText(m_expression);
         return;
     }
     showResult(result);
-    // ¼ÇÂ¼ÀúÊ·£¨´¿ÎÄ±¾£©
+    // è®°å½•å†å²ï¼ˆçº¯æ–‡æœ¬ï¼‰
     m_historyManager.addEntry(m_lastValidExpression + " = " + QString::number(result));
     
 }
@@ -190,7 +192,7 @@ void Calculator::clearExpression()
     m_pDisplay->setText("0");
 }
 
-// ¸¨Öú·½·¨ -----------------------------------------------------
+// è¾…åŠ©æ–¹æ³• -----------------------------------------------------
 void Calculator::resetAfterError()
 {
     m_hasCalcError = false;
@@ -208,13 +210,13 @@ void Calculator::showResult(double result)
     m_pDisplay->clear();
     QTextCursor cursor(m_pDisplay->document());
 
-    // Ô­±í´ïÊ½£¨»ÒÉ«£©
+    // åŸè¡¨è¾¾å¼ï¼ˆç°è‰²ï¼‰
     QTextCharFormat grayFormat;
     grayFormat.setForeground(QColor(151, 151, 151));
     cursor.insertText(m_lastValidExpression + " =", grayFormat);
 
-    // ½á¹û£¨ºÚÉ«£©
-    cursor.insertBlock();//»»ĞĞ
+    // ç»“æœï¼ˆé»‘è‰²ï¼‰
+    cursor.insertBlock();//æ¢è¡Œ
     cursor.insertText(QString::number(result));
 
     m_expression = QString::number(result);
@@ -223,13 +225,13 @@ void Calculator::showResult(double result)
 void Calculator::handleCalculationError(const QString& msg)
 {
     m_hasCalcError = true;
-    QMessageBox::warning(this, u8"´íÎó", msg, QMessageBox::Ok);
+    QMessageBox::warning(this, u8"é”™è¯¯", msg, QMessageBox::Ok);
     m_pDisplay->setStyleSheet("color: red;");
     m_expression = m_lastValidExpression;
     updateDisplay();
 }
 
-// ±í´ïÊ½ÇóÖµÂß¼­ -----------------------------------------------
+// è¡¨è¾¾å¼æ±‚å€¼é€»è¾‘ -----------------------------------------------
 double Calculator::evaluateExpression(QString expr) {
     QStack<double> numbers;
     QStack<QChar> ops;
@@ -252,7 +254,7 @@ double Calculator::evaluateExpression(QString expr) {
         else if (isOperator(c) && i == expr.length() - 1)
         {
             m_hasCalcError = true;
-            m_calcErrorMsg = u8"È±ÉÙ²Ù×÷Êı";
+            m_calcErrorMsg = u8"ç¼ºå°‘æ“ä½œæ•°";
         }
         else if (isOperator(c))
         {
@@ -272,7 +274,7 @@ double Calculator::evaluateExpression(QString expr) {
 
 void Calculator::calculateStep(QStack<double>& nums, QStack<QChar>& ops)
 {
-    if (nums.size() < 2 || ops.isEmpty()) return;//Ö±½Ó·µ»ØÔ­Êı¾İ
+    if (nums.size() < 2 || ops.isEmpty()) return;//ç›´æ¥è¿”å›åŸæ•°æ®
     double b = nums.pop();
     double a = nums.pop();
     QChar op = ops.pop();
@@ -282,8 +284,8 @@ void Calculator::calculateStep(QStack<double>& nums, QStack<QChar>& ops)
     case '*': nums.push(a * b); break;
     case '/':
         if (b == 0) {
-            m_hasCalcError = true; // ÉèÖÃ´íÎó×´Ì¬
-            m_calcErrorMsg = u8"³ıÊı²»ÄÜÎª0";
+            m_hasCalcError = true; // è®¾ç½®é”™è¯¯çŠ¶æ€
+            m_calcErrorMsg = u8"é™¤æ•°ä¸èƒ½ä¸º0";
             nums.clear();
             ops.clear();
             return;
@@ -293,27 +295,31 @@ void Calculator::calculateStep(QStack<double>& nums, QStack<QChar>& ops)
     }
 }
 
-// ½çÃæÏà¹Ø·½·¨ -------------------------------------------------
+// ç•Œé¢ç›¸å…³æ–¹æ³• -------------------------------------------------
 void Calculator::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
 
-    // ¸üĞÂÃÉ²ã³ß´ç
+    // åŠ¨æ€è°ƒæ•´æ—¶è€ƒè™‘ç§‘å­¦æ¨¡å¼é¢æ¿
+    if (m_pScientificPanel) {
+        m_pScientificPanel->setFixedHeight(height() * 0.3);
+    }
+    // æ›´æ–°è’™å±‚å°ºå¯¸
     m_overlay->setGeometry(rect());
 
-    // ¶¯Ì¬µ÷Õû×ÖÌå
+    // åŠ¨æ€è°ƒæ•´å­—ä½“
     const int baseSize = qMin(width(), height()) / 20;
     const int mainFontSize = qMax(20, static_cast<int>(height() * 0.08));
 
-    // ÏÔÊ¾¿ò×ÖÌå
+    // æ˜¾ç¤ºæ¡†å­—ä½“
     QFont displayFont = m_pDisplay->font();
     displayFont.setPixelSize(mainFontSize);
     m_pDisplay->setFont(displayFont);
 
-    // ÀúÊ·µ¯´°×ÖÌå
+    // å†å²å¼¹çª—å­—ä½“
     m_historyPopup->updateFontSize(mainFontSize * 0.7);
 
-    // °´Å¥×ÖÌå
+    // æŒ‰é’®å­—ä½“
     QFont btnFont = font();
     btnFont.setPixelSize(qMax(12, baseSize));
     QList<QPushButton*> buttons = findChildren<QPushButton*>();
@@ -322,11 +328,11 @@ void Calculator::resizeEvent(QResizeEvent* event)
             btn->setFont(btnFont);
     }
 
-    // µ÷ÕûÀúÊ·°´Å¥
+    // è°ƒæ•´å†å²æŒ‰é’®
     const int btnSize = qMax(24, baseSize * 2);
     m_topBar->updateButtonSize(btnSize);
 
-    // ¸üĞÂµ¯´°Î»ÖÃ
+    // æ›´æ–°å¼¹çª—ä½ç½®
     updatePopupLayout();
 }
 
@@ -357,7 +363,7 @@ void Calculator::toggleHistoryWindow()
     m_historyPopup->showPopup();
 }
 
-// ÔËËã·ûÅĞ¶Ï¸¨Öú·½·¨ --------------------------------------------
+// è¿ç®—ç¬¦åˆ¤æ–­è¾…åŠ©æ–¹æ³• --------------------------------------------
 bool Calculator::isOperator(QChar c)
 {
     return c == '+' || c == '-' || c == '*' || c == '/';
@@ -366,4 +372,70 @@ bool Calculator::isOperator(QChar c)
 bool Calculator::hasPriority(QChar op1, QChar op2)
 {
     return ((op2 == '*' || op2 == '/') && (op1 == '+' || op1 == '-'));
+}
+
+// æ·»åŠ æ¨¡å¼å¤„ç†å®ç°
+void Calculator::handleModeChange(const QString& mode)
+{
+    clearCurrentUI();
+
+    if (mode == u8"æ ‡å‡†") {
+        setupStandardUI();
+    }
+    else if (mode == u8"ç§‘å­¦") {
+        setupScientificUI();
+    }
+
+    update();  // è§¦å‘ç•Œé¢æ›´æ–°
+}
+void Calculator::setupStandardUI()
+{
+    // æ ‡å‡†æ¨¡å¼ç•Œé¢ï¼ˆä¿æŒåŸæœ‰å¸ƒå±€ï¼‰
+    createButtons();  // é‡å»ºæ ‡å‡†æŒ‰é’®
+}
+
+void Calculator::setupScientificUI()
+{
+    // ç§‘å­¦æ¨¡å¼ç•Œé¢ï¼ˆç¤ºä¾‹å®ç°ï¼‰
+    m_pScientificPanel = new QWidget;
+    QGridLayout* sciLayout = new QGridLayout(m_pScientificPanel);
+
+    // æ·»åŠ ç§‘å­¦è®¡ç®—æŒ‰é’®ï¼ˆç¤ºä¾‹ï¼‰
+    const QString sciButtons[4][5] = {
+        {"sin", "cos", "tan", "(", ")"},
+        {"log", "ln", "Ï€", "^", "âˆš"},
+        {"xÂ²", "xÂ³", "e", "!", "Â±"},
+        {"(", ")", "Rad", "Deg", ""}
+    };
+
+    for (int row = 0; row < 4; ++row) {
+        for (int col = 0; col < 5; ++col) {
+            if (sciButtons[row][col].isEmpty()) continue;
+
+            QPushButton* btn = new QPushButton(sciButtons[row][col]);
+            btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            sciLayout->addWidget(btn, row, col);
+        }
+    }
+
+    // å°†ç§‘å­¦é¢æ¿æ·»åŠ åˆ°ä¸»å¸ƒå±€
+    dynamic_cast<QVBoxLayout*>(layout())->insertWidget(2, m_pScientificPanel);
+}
+
+void Calculator::clearCurrentUI()
+{
+    // ç§»é™¤ç§‘å­¦é¢æ¿
+    if (m_pScientificPanel) {
+        layout()->removeWidget(m_pScientificPanel);
+        delete m_pScientificPanel;
+        m_pScientificPanel = nullptr;
+    }
+
+    // æ¸…é™¤åŸæœ‰æŒ‰é’®
+    QLayoutItem* item;
+    while (item = m_pButtonLayout->takeAt(0))
+    {
+        delete item->widget();
+        delete item;
+    }
 }

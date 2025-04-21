@@ -31,6 +31,7 @@ private slots:
     void backspaceClicked();
     void clearExpression();
     void toggleHistoryWindow();
+    void handleModeChange(const QString& mode);  // 新增模式处理槽函数
     //void updateHistoryDisplay();
 
 private:
@@ -46,6 +47,10 @@ private:
     bool hasPriority(QChar op1, QChar op2);
     void calculateStep(QStack<double>& nums, QStack<QChar>& ops);
 
+    void setupStandardUI();     // 标准模式界面
+    void setupScientificUI();   // 科学模式界面（占位实现）
+    void clearCurrentUI();      // 清理当前界面
+
     TopBar* m_topBar;
     HistoryPopup* m_historyPopup;
     HistoryManager m_historyManager;
@@ -56,6 +61,7 @@ private:
     QString m_expression;
     bool m_hasCalcError = false;
     QString m_lastValidExpression;
+    QWidget* m_pScientificPanel = nullptr;  // 科学模式面板
 };
 
 #endif // CALCULATOR_H
