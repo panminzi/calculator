@@ -1,5 +1,4 @@
-﻿// topbar.cpp
-#include "topbar.h"
+﻿#include "topbar.h"
 #include <QHBoxLayout>
 
 TopBar::TopBar(Sidebar* sidebar, QWidget* parent)
@@ -28,7 +27,7 @@ void TopBar::setupUI()
             background: rgba(0,0,0,0.1);
         }
     )");
-    connect(m_pMenuBtn, &QPushButton::clicked, this,&TopBar::showModeMenu);
+    connect(m_pMenuBtn, &QPushButton::clicked, this, &TopBar::showModeMenu);
     //connect(m_pMenuBtn, &QPushButton::clicked, [this] {
     //    m_pSideBar->showSidebar();
      //   });

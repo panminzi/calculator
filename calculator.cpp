@@ -1,5 +1,4 @@
-﻿#include "calculator.h"
-#include <QGridLayout>
+﻿#include <QGridLayout>
 #include <QFont>
 #include <QPushButton>
 #include <QMessageBox>
@@ -8,7 +7,7 @@
 #include <QTextCursor>
 #include <QTextCharFormat>
 #include <QTextEdit>
-
+#include"calculator.h"
 Calculator::Calculator(QWidget* parent)
     : QWidget(parent)
 {
@@ -28,8 +27,8 @@ void Calculator::setupUI()
     m_pSideBar = new Sidebar(this);
     m_pSideBar->move(-m_pSideBar->width(), 0);
     // 顶部工具栏
-    m_pTopBar = new TopBar(m_pSideBar,this);
-    mainLayout->addWidget(m_pTopBar,1);
+    m_pTopBar = new TopBar(m_pSideBar, this);
+    mainLayout->addWidget(m_pTopBar, 1);
 
     // 显示区域
     m_pDisplay = new QTextEdit;
@@ -182,7 +181,7 @@ void Calculator::equalClicked()
     showResult(result);
     // 记录历史（纯文本）
     m_historyManager.addEntry(m_lastValidExpression + " = " + QString::number(result));
-    
+
 }
 
 void Calculator::backspaceClicked()
@@ -341,14 +340,14 @@ void Calculator::resizeEvent(QResizeEvent* event)
             btn->setFont(btnFont);
     }
 
-   
+
     const int btnSize = qMax(24, baseSize * 2);
     m_pTopBar->updateButtonSize(btnSize);
 
     // 更新弹窗位置
     updatePopupLayout();
 
-  // 同步更新侧边栏尺寸
+    // 同步更新侧边栏尺寸
     if (m_pSideBar) {
         const int sidebarWidth = width() * 0.3;
         m_pSideBar->setFixedSize(sidebarWidth, height());
@@ -463,7 +462,7 @@ void Calculator::clearCurrentUI()
 void Calculator::setupModules()
 {
     // 先创建侧边栏
-    m_pSideBar = new Sidebar(this);
+   // m_pSideBar = new Sidebar(this);
     m_pSideBar->addMenuItem(u8"标准", QIcon(":/calculator/images/icon_standard.png"));
     m_pSideBar->addMenuItem(u8"科学", QIcon(":/calculator/images/icon_scientific.png"));
 
@@ -471,5 +470,3 @@ void Calculator::setupModules()
     connect(m_pSideBar, &Sidebar::itemClicked,
         this, &Calculator::handleModeChange);
 }
-
-
