@@ -52,6 +52,9 @@
     <ClCompile Include="sidebar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="numberpad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="historymanager.h">
@@ -64,6 +67,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="sidebar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="numberpad.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

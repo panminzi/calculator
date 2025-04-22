@@ -37,6 +37,7 @@ Sidebar::Sidebar(QWidget* parent)
             border-radius: 16px;
         }
     )");
+    //closeBtn->setIconSize(QSize(size - 8, size - 8));
     connect(closeBtn, &QPushButton::clicked, this, &Sidebar::hideSidebar);
 
     // 调整布局
@@ -116,7 +117,7 @@ void Sidebar::hideSidebar()
 void Sidebar::updatePosition()
 {
     if (m_parent) {
-        int sidebarWidth = m_parent->width() * 0.3;
+        int sidebarWidth = m_parent->width() * 0.35;
         setFixedSize(sidebarWidth, m_parent->height());
         move(m_parent->mapToGlobal(QPoint(0, 0)));
     }

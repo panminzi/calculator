@@ -8,6 +8,7 @@
 #include <QTextCharFormat>
 #include <QTextEdit>
 #include"calculator.h"
+#include"numberpad.h"
 Calculator::Calculator(QWidget* parent)
     : QWidget(parent)
 {
@@ -55,45 +56,27 @@ void Calculator::setupUI()
 
 void Calculator::createButtons()
 {
-    const QString buttons[4][5] = {
-        {"7", "8", "9", "/", "C"},
-        {"4", "5", "6", "*", "B"},
-        {"1", "2", "3", "-", ""},
-        {"0", ".", "=", "+", ""}
-    };
+    m_numberPad = new NumberPad;
+    m_pButtonLayout->addWidget(m_numberPad, 0, 0, 4, 3);
 
-    for (int row = 0; row < 4; ++row) {
-        for (int col = 0; col < 5; ++col) {
-            if (buttons[row][col].isEmpty()) continue;
-
-            const QString& text = buttons[row][col];
-            QPushButton* btn = nullptr;
-
-            if (text == "C") {
-                btn = createButton(text, SLOT(clearExpression()));
-            }
-            else if (text == "=") {
-                btn = createButton(text, SLOT(equalClicked()));
-            }
-            else if (text == "B") {
-                btn = createButton(text, SLOT(backspaceClicked()));
-            }
-            else if (text.at(0).isDigit() || text == ".") {
-                btn = createButton(text, SLOT(digitClicked()));
-            }
-            else {
-                btn = createButton(text, SLOT(operatorClicked()));
-            }
-
-            m_pButtonLayout->addWidget(btn, row, col);
-        }
+    // 创建运算符按钮
+    const QString ops[] = { "/", "*", "-", "+" };
+    for (int i = 0; i < 4; ++i) {
+        QPushButton* btn = createButton(ops[i], SLOT(operatorClicked()));
+        m_pButtonLayout->addWidget(btn, i, 3);
     }
 
+    // 创建功能按钮
+    QPushButton* clearBtn = createButton("C", SLOT(clearExpression()));
+    QPushButton* backspaceBtn = createButton("B", SLOT(backspaceClicked()));
+    m_pButtonLayout->addWidget(clearBtn, 4, 0);
+    m_pButtonLayout->addWidget(backspaceBtn, 4, 1);
+
     // 设置按钮拉伸比例
-    for (int i = 0; i < 4; ++i)
-        m_pButtonLayout->setRowStretch(i, 1);
-    for (int i = 0; i < 5; ++i)
-        m_pButtonLayout->setColumnStretch(i, 1);
+  //  for (int i = 0; i < 5; ++i)
+   //     m_pButtonLayout->setRowStretch(i, 1);
+    //for (int i = 0; i < 4; ++i)
+     //   m_pButtonLayout->setColumnStretch(i, 1);
 }
 
 QPushButton* Calculator::createButton(const QString& text, const char* member)
@@ -121,6 +104,11 @@ void Calculator::connectSignals()
 
     connect(m_pSideBar, &Sidebar::itemClicked, this, &Calculator::handleModeChange);
     connect(m_pSideBar, &Sidebar::closed, [this] { /* 可添加关闭后操作 */ });
+
+    // 数字键盘信号连接
+    connect(m_numberPad, &NumberPad::digitClicked, this, &Calculator::digitClicked);
+    connect(m_numberPad, &NumberPad::operatorClicked, this, &Calculator::operatorClicked);
+    connect(m_numberPad, &NumberPad::equalClicked, this, &Calculator::equalClicked);
     // 连接新模式信号
      //   connect(m_pSideBar, &Sidebar::itemClicked,
      //       this, &Calculator::handleModeChange);
@@ -334,10 +322,12 @@ void Calculator::resizeEvent(QResizeEvent* event)
     // 按钮字体
     QFont btnFont = font();
     btnFont.setPixelSize(qMax(12, baseSize));
-    QList<QPushButton*> buttons = findChildren<QPushButton*>();
-    foreach(QPushButton * btn, buttons) {
-        if (btn != m_pTopBar->historyButton())
-            btn->setFont(btnFont);
+    QList<NumberPad*> pads = findChildren<NumberPad*>();
+    foreach(NumberPad * pad, pads) {
+        QList<QPushButton*> btns = pad->findChildren<QPushButton*>();
+        foreach(QPushButton * b, btns) {
+            b->setFont(btnFont);
+        }
     }
 
 
@@ -416,29 +406,34 @@ void Calculator::setupStandardUI()
 
 void Calculator::setupScientificUI()
 {
-    // 科学模式界面（示例实现）
+    // 创建科学面板
     m_pScientificPanel = new QWidget;
     QGridLayout* sciLayout = new QGridLayout(m_pScientificPanel);
 
-    // 添加科学计算按钮（示例）
-    const QString sciButtons[4][5] = {
-        {"sin", "cos", "tan", "(", ")"},
-        {"log", "ln", "π", "^", "√"},
-        {"x²", "x³", "e", "!", "±"},
-        {"(", ")", "Rad", "Deg", ""}
+    // 添加数字键盘
+    NumberPad* sciNumberPad = new NumberPad;
+    sciLayout->addWidget(sciNumberPad, 0, 0, 4, 3);
+
+    // 连接信号
+    connect(sciNumberPad, &NumberPad::digitClicked, this, &Calculator::digitClicked);
+    connect(sciNumberPad, &NumberPad::operatorClicked, this, &Calculator::operatorClicked);
+    connect(sciNumberPad, &NumberPad::equalClicked, this, &Calculator::equalClicked);
+
+    // 添加科学按钮...
+    const QString sciButtons[4][3] = {
+        {"sin", "cos", "tan"},
+        {"log", "ln", "π"},
+        {"x²", "x³", "√"},
+        {"(", ")", "±"}
     };
 
     for (int row = 0; row < 4; ++row) {
-        for (int col = 0; col < 5; ++col) {
-            if (sciButtons[row][col].isEmpty()) continue;
-
+        for (int col = 0; col < 3; ++col) {
             QPushButton* btn = new QPushButton(sciButtons[row][col]);
-            btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            sciLayout->addWidget(btn, row, col);
+            sciLayout->addWidget(btn, row, col + 3);
         }
     }
 
-    // 将科学面板添加到主布局
     dynamic_cast<QVBoxLayout*>(layout())->insertWidget(2, m_pScientificPanel);
 }
 

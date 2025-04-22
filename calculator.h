@@ -6,6 +6,7 @@
 #include "historypopup.h"
 #include "topbar.h"
 #include "historymanager.h"
+#include"numberpad.h"
 
 class QTextEdit;
 class QGridLayout;
@@ -53,6 +54,7 @@ private:
     void clearCurrentUI();      // 清理当前界面
     void setupModules();
 
+    NumberPad* m_numberPad;
     Sidebar* m_pSideBar;
     TopBar* m_pTopBar;
     HistoryPopup* m_historyPopup;
