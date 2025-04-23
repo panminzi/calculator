@@ -7,6 +7,7 @@
 #include "topbar.h"
 #include "historymanager.h"
 #include"numberpad.h"
+#include< QStackedWidget>
 
 class QTextEdit;
 class QGridLayout;
@@ -26,8 +27,8 @@ protected:
     void resizeEvent(QResizeEvent* event) override;
 
 private slots:
-    void digitClicked();
-    void operatorClicked();
+    void digitClicked(QString digit);
+    void operatorClicked(QString op);
     void equalClicked();
     void backspaceClicked();
     void clearExpression();
@@ -38,7 +39,7 @@ private slots:
 
 private:
     void setupUI();
-    void createButtons();
+   // void createButtons();
     QPushButton* createButton(const QString& text, const char* member);
     void updatePopupLayout();
     bool eventFilter(QObject* obj, QEvent* event);
@@ -51,22 +52,28 @@ private:
 
     void setupStandardUI();     // 标准模式界面
     void setupScientificUI();   // 科学模式界面（占位实现）
-    void clearCurrentUI();      // 清理当前界面
+    //void clearCurrentUI();      // 清理当前界面
     void setupModules();
 
-    NumberPad* m_numberPad;
+    NumberPad* m_standardPad; // 标准模式键盘
+    NumberPad* m_scientificPad; // 科学模式键盘
+  
     Sidebar* m_pSideBar;
     TopBar* m_pTopBar;
     HistoryPopup* m_historyPopup;
     HistoryManager m_historyManager;
     QTextEdit* m_pDisplay;
-    QGridLayout* m_pButtonLayout;
+    //QWidget* keyboardArea;
+    QStackedWidget* m_keyboardStack; // 新增堆叠布局容器
     QWidget* m_overlay;
     QString m_calcErrorMsg;
     QString m_expression;
     bool m_hasCalcError = false;
     QString m_lastValidExpression;
     QWidget* m_pScientificPanel = nullptr;  // 科学模式面板
+    void setupKeyboardLayout(); // 新增方法
+    NumberPad* m_currentPad = nullptr; // 当前键盘实例
+    QString  m_currentMode;
 };
 
 #endif // CALCULATOR_H

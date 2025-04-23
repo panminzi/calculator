@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_NumberPad_t {
-    QByteArrayData data[7];
-    char stringdata0[62];
+    QByteArrayData data[9];
+    char stringdata0[81];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,11 +37,14 @@ QT_MOC_LITERAL(2, 23, 0), // ""
 QT_MOC_LITERAL(3, 24, 5), // "digit"
 QT_MOC_LITERAL(4, 30, 15), // "operatorClicked"
 QT_MOC_LITERAL(5, 46, 2), // "op"
-QT_MOC_LITERAL(6, 49, 12) // "equalClicked"
+QT_MOC_LITERAL(6, 49, 12), // "equalClicked"
+QT_MOC_LITERAL(7, 62, 14), // "controlClicked"
+QT_MOC_LITERAL(8, 77, 3) // "cmd"
 
     },
     "NumberPad\0digitClicked\0\0digit\0"
-    "operatorClicked\0op\0equalClicked"
+    "operatorClicked\0op\0equalClicked\0"
+    "controlClicked\0cmd"
 };
 #undef QT_MOC_LITERAL
 
@@ -51,22 +54,24 @@ static const uint qt_meta_data_NumberPad[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   29,    2, 0x06 /* Public */,
-       4,    1,   32,    2, 0x06 /* Public */,
-       6,    0,   35,    2, 0x06 /* Public */,
+       1,    1,   34,    2, 0x06 /* Public */,
+       4,    1,   37,    2, 0x06 /* Public */,
+       6,    0,   40,    2, 0x06 /* Public */,
+       7,    1,   41,    2, 0x06 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
     QMetaType::Void, QMetaType::QString,    5,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,    8,
 
        0        // eod
 };
@@ -80,6 +85,7 @@ void NumberPad::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 0: _t->digitClicked((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 1: _t->operatorClicked((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 2: _t->equalClicked(); break;
+        case 3: _t->controlClicked((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -102,6 +108,13 @@ void NumberPad::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             typedef void (NumberPad::*_t)();
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&NumberPad::equalClicked)) {
                 *result = 2;
+                return;
+            }
+        }
+        {
+            typedef void (NumberPad::*_t)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&NumberPad::controlClicked)) {
+                *result = 3;
                 return;
             }
         }
@@ -133,13 +146,13 @@ int NumberPad::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 4)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }
@@ -162,6 +175,13 @@ void NumberPad::operatorClicked(QString _t1)
 void NumberPad::equalClicked()
 {
     QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
+}
+
+// SIGNAL 3
+void NumberPad::controlClicked(QString _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

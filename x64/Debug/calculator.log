@@ -1,10 +1,4 @@
 ﻿   Qt/MSBuild: 3.3.1.1
    Qt: 5.9.3
-  moc calculator.h
   calculator.cpp
-  main.cpp
-D:\jinshanpratice\source\calculator\calculator.cpp(426,10): warning C4566: 由通用字符名称“\u00B2”表示的字符不能在当前代码页(936)中表示出来
-D:\jinshanpratice\source\calculator\calculator.cpp(426,17): warning C4566: 由通用字符名称“\u00B3”表示的字符不能在当前代码页(936)中表示出来
-  moc_numberpad.cpp
-  moc_calculator.cpp
   calculator.vcxproj -> D:\jinshanpratice\source\calculator\x64\Debug\calculator.exe

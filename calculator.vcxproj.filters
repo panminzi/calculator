@@ -55,6 +55,12 @@
     <ClCompile Include="numberpad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="standardpad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scientificpad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="historymanager.h">
@@ -70,6 +76,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="numberpad.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="scientificpad.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="standardpad.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

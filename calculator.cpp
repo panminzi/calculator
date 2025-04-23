@@ -1,5 +1,4 @@
-﻿#include <QGridLayout>
-#include <QFont>
+﻿#include <QFont>
 #include <QPushButton>
 #include <QMessageBox>
 #include <QStack>
@@ -7,14 +6,33 @@
 #include <QTextCursor>
 #include <QTextCharFormat>
 #include <QTextEdit>
+#include<QVBoxLayout>
+#include<QDebug>
+#include"scientificpad.h"
 #include"calculator.h"
-#include"numberpad.h"
-Calculator::Calculator(QWidget* parent)
-    : QWidget(parent)
-{
+#include"standardpad.h"
+#include"scientificpad.h"
+#include<QStackedWidget>
+// 构造函数
+Calculator::Calculator(QWidget * parent)
+    : QWidget(parent), m_currentMode(u8"标准") {
     setupUI();
     setupModules();
-    createButtons();
+    setMinimumSize(400, 500);
+
+    // 初始化堆叠容器并添加键盘
+    m_keyboardStack = new QStackedWidget(this);
+    m_standardPad = new StandardPad();
+    m_scientificPad = new ScientificPad();
+    m_keyboardStack->addWidget(m_standardPad);
+    m_keyboardStack->addWidget(m_scientificPad);
+    m_keyboardStack->setCurrentWidget(m_standardPad); // 默认显示标准键盘
+    m_currentPad = m_standardPad;
+    setupKeyboardLayout();
+    // 将堆叠容器添加到主布局
+    QVBoxLayout* mainLayout = qobject_cast<QVBoxLayout*>(layout());
+    mainLayout->insertWidget(2, m_keyboardStack, 7); // 调整位置权重
+
     connectSignals();
 }
 
@@ -37,11 +55,6 @@ void Calculator::setupUI()
     m_pDisplay->setAlignment(Qt::AlignRight);
     mainLayout->addWidget(m_pDisplay, 2);
 
-    // 按钮网格布局
-    m_pButtonLayout = new QGridLayout;
-    m_pButtonLayout->setSpacing(3);
-    mainLayout->addLayout(m_pButtonLayout, 7);
-
     // 蒙层设置
     m_overlay = new QWidget(this);
     m_overlay->setStyleSheet("background: rgba(0,0,0,0.3);");
@@ -52,31 +65,6 @@ void Calculator::setupUI()
     // 历史弹窗
     m_historyPopup = new HistoryPopup(this);
     m_overlay->stackUnder(m_historyPopup);
-}
-
-void Calculator::createButtons()
-{
-    m_numberPad = new NumberPad;
-    m_pButtonLayout->addWidget(m_numberPad, 0, 0, 4, 3);
-
-    // 创建运算符按钮
-    const QString ops[] = { "/", "*", "-", "+" };
-    for (int i = 0; i < 4; ++i) {
-        QPushButton* btn = createButton(ops[i], SLOT(operatorClicked()));
-        m_pButtonLayout->addWidget(btn, i, 3);
-    }
-
-    // 创建功能按钮
-    QPushButton* clearBtn = createButton("C", SLOT(clearExpression()));
-    QPushButton* backspaceBtn = createButton("B", SLOT(backspaceClicked()));
-    m_pButtonLayout->addWidget(clearBtn, 4, 0);
-    m_pButtonLayout->addWidget(backspaceBtn, 4, 1);
-
-    // 设置按钮拉伸比例
-  //  for (int i = 0; i < 5; ++i)
-   //     m_pButtonLayout->setRowStretch(i, 1);
-    //for (int i = 0; i < 4; ++i)
-     //   m_pButtonLayout->setColumnStretch(i, 1);
 }
 
 QPushButton* Calculator::createButton(const QString& text, const char* member)
@@ -103,56 +91,30 @@ void Calculator::connectSignals()
         });
 
     connect(m_pSideBar, &Sidebar::itemClicked, this, &Calculator::handleModeChange);
-    connect(m_pSideBar, &Sidebar::closed, [this] { /* 可添加关闭后操作 */ });
+    connect(m_pSideBar, &Sidebar::closed, [this] {});
 
-    // 数字键盘信号连接
-    connect(m_numberPad, &NumberPad::digitClicked, this, &Calculator::digitClicked);
-    connect(m_numberPad, &NumberPad::operatorClicked, this, &Calculator::operatorClicked);
-    connect(m_numberPad, &NumberPad::equalClicked, this, &Calculator::equalClicked);
-    // 连接新模式信号
-     //   connect(m_pSideBar, &Sidebar::itemClicked,
-     //       this, &Calculator::handleModeChange);
 }
 
 // 核心计算逻辑 -------------------------------------------------
-void Calculator::digitClicked()
-{
+void Calculator::digitClicked(QString digit) {
+    qDebug() << "Received digit:" << digit;
     if (m_hasCalcError) resetAfterError();
-
-    QPushButton* btn = qobject_cast<QPushButton*>(sender());
-    m_expression += btn->text();
+    m_expression += digit;
     updateDisplay();
 }
 
-void Calculator::operatorClicked()
-{
+void Calculator::operatorClicked(QString op) {
+    qDebug() << "Received operator:" << op;
     if (m_hasCalcError) resetAfterError();
 
-    QPushButton* btn = qobject_cast<QPushButton*>(sender());
-    QString op = btn->text();
-
-    if (!m_expression.isEmpty() && isOperator(m_expression[m_expression.length() - 1]))
+    // 替换末尾的运算符
+    if (!m_expression.isEmpty() && isOperator(m_expression[m_expression.length()-1])) {
         m_expression.chop(1);
-
+    }
     m_expression += op;
     updateDisplay();
 }
-/*
-void Calculator::equalClicked()
-{
-    m_hasCalcError = false;
-    m_lastValidExpression = m_expression;
 
-    try {
-        double result = evaluateExpression(m_expression);
-        showResult(result);
-        m_historyManager.addEntry(m_lastValidExpression + " = " + QString::number(result));
-    }
-    catch (const std::exception& e) {
-        handleCalculationError(e.what());
-    }
-}
-*/
 void Calculator::equalClicked()
 {
     m_hasCalcError = false;
@@ -301,9 +263,9 @@ void Calculator::resizeEvent(QResizeEvent* event)
     QWidget::resizeEvent(event);
 
     // 动态调整时考虑科学模式面板
-    if (m_pScientificPanel) {
-        m_pScientificPanel->setFixedHeight(height() * 0.3);
-    }
+   // if (m_pScientificPanel) {
+    //    m_pScientificPanel->setFixedHeight(height() * 0.3);
+   // }
     // 更新蒙层尺寸
     m_overlay->setGeometry(rect());
 
@@ -385,77 +347,17 @@ bool Calculator::hasPriority(QChar op1, QChar op2)
 }
 
 // 添加模式处理实现
-void Calculator::handleModeChange(const QString& mode)
-{
-    clearCurrentUI();
+void Calculator::handleModeChange(const QString& mode) {
 
-    if (mode == u8"标准") {
-        setupStandardUI();
-    }
-    else if (mode == u8"科学") {
-        setupScientificUI();
-    }
-
-    update();  // 触发界面更新
-}
-void Calculator::setupStandardUI()
-{
-    // 标准模式界面（保持原有布局）
-    createButtons();  // 重建标准按钮
+    QSize currentSize = size(); // 保存当前窗口尺寸
+    m_currentMode = mode;
+    setupKeyboardLayout();
+    resize(currentSize); // 强制恢复原窗口尺寸
 }
 
-void Calculator::setupScientificUI()
-{
-    // 创建科学面板
-    m_pScientificPanel = new QWidget;
-    QGridLayout* sciLayout = new QGridLayout(m_pScientificPanel);
-
-    // 添加数字键盘
-    NumberPad* sciNumberPad = new NumberPad;
-    sciLayout->addWidget(sciNumberPad, 0, 0, 4, 3);
-
-    // 连接信号
-    connect(sciNumberPad, &NumberPad::digitClicked, this, &Calculator::digitClicked);
-    connect(sciNumberPad, &NumberPad::operatorClicked, this, &Calculator::operatorClicked);
-    connect(sciNumberPad, &NumberPad::equalClicked, this, &Calculator::equalClicked);
-
-    // 添加科学按钮...
-    const QString sciButtons[4][3] = {
-        {"sin", "cos", "tan"},
-        {"log", "ln", "π"},
-        {"x²", "x³", "√"},
-        {"(", ")", "±"}
-    };
-
-    for (int row = 0; row < 4; ++row) {
-        for (int col = 0; col < 3; ++col) {
-            QPushButton* btn = new QPushButton(sciButtons[row][col]);
-            sciLayout->addWidget(btn, row, col + 3);
-        }
-    }
-
-    dynamic_cast<QVBoxLayout*>(layout())->insertWidget(2, m_pScientificPanel);
-}
-
-void Calculator::clearCurrentUI()
-{
-    // 移除科学面板
-    if (m_pScientificPanel) {
-        layout()->removeWidget(m_pScientificPanel);
-        delete m_pScientificPanel;
-        m_pScientificPanel = nullptr;
-    }
-
-    // 清除原有按钮
-    QLayoutItem* item;
-    while (item = m_pButtonLayout->takeAt(0))
-    {
-        delete item->widget();
-        delete item;
-    }
-}
 void Calculator::setupModules()
 {
+
     // 先创建侧边栏
    // m_pSideBar = new Sidebar(this);
     m_pSideBar->addMenuItem(u8"标准", QIcon(":/calculator/images/icon_standard.png"));
@@ -464,4 +366,35 @@ void Calculator::setupModules()
     // 连接信号
     connect(m_pSideBar, &Sidebar::itemClicked,
         this, &Calculator::handleModeChange);
+}
+
+void Calculator::setupKeyboardLayout() {
+    if (m_currentPad) {
+        //一定要断开，不然就会触发多个信号。
+        disconnect(m_currentPad, &NumberPad::digitClicked, this, &Calculator::digitClicked);
+        disconnect(m_currentPad, &NumberPad::operatorClicked, this, &Calculator::operatorClicked);
+        disconnect(m_currentPad, &NumberPad::equalClicked, this, &Calculator::equalClicked);
+        disconnect(m_currentPad, &NumberPad::controlClicked, this, nullptr);
+   }
+    // 根据模式切换显示的键盘
+    if (m_currentMode == u8"标准") {
+        m_currentPad = m_standardPad;
+        m_keyboardStack->setCurrentWidget(m_standardPad);
+    }
+    else {
+        m_currentPad = m_scientificPad;
+        m_keyboardStack->setCurrentWidget(m_scientificPad);
+    }
+    // 显示新键盘并连接所有信号
+    connect(m_currentPad, &NumberPad::digitClicked, this, &Calculator::digitClicked);
+    connect(m_currentPad, &NumberPad::operatorClicked, this, &Calculator::operatorClicked);
+    connect(m_currentPad, &NumberPad::equalClicked, this, &Calculator::equalClicked);
+    connect(m_currentPad, &NumberPad::controlClicked, this, [this](QString cmd) {
+        if (cmd == "C") clearExpression();
+        else if (cmd == "B") backspaceClicked();
+        });
+
+    // 强制刷新布局
+    m_keyboardStack->currentWidget()->layout()->activate();
+    update();
 }

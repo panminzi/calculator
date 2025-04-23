@@ -94,7 +94,9 @@
   <ItemGroup>
     <ClCompile Include="historymanager.cpp" />
     <ClCompile Include="numberpad.cpp" />
+    <ClCompile Include="scientificpad.cpp" />
     <ClCompile Include="sidebar.cpp" />
+    <ClCompile Include="standardpad.cpp" />
     <ClCompile Include="topbar.cpp" />
     <QtRcc Include="calculator.qrc" />
     <QtUic Include="calculator.ui" />
@@ -113,6 +115,10 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="numberpad.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="scientificpad.h" />
+    <QtMoc Include="standardpad.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
