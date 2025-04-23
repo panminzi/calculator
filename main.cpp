@@ -1,7 +1,8 @@
-#include "calculator.h"
 #include <QApplication>
 
-int main(int argc, char* argv[]) {
+#include "calculator.h"
+
+int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     Calculator calculator;
     calculator.show();

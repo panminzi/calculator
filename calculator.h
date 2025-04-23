@@ -1,22 +1,23 @@
-// calculator.h
-#ifndef CALCULATOR_H
+ï»¿#ifndef CALCULATOR_H
 #define CALCULATOR_H
 
 #include <QWidget>
+#include <QTextEdit>
+#include <QStackedWidget>
+#include <QGridLayout>
+
+#include "standardpad.h"
+#include "scientificpad.h"
 #include "historypopup.h"
 #include "topbar.h"
 #include "historymanager.h"
-#include"numberpad.h"
-#include< QStackedWidget>
-
-class QTextEdit;
-class QGridLayout;
+#include "basicpad.h"
 
 class Calculator : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Calculator(QWidget* parent = nullptr);
+    explicit Calculator(QWidget *parent = nullptr);
     void connectSignals();
     void resetAfterError();
     void updateDisplay();
@@ -34,46 +35,37 @@ private slots:
     void clearExpression();
     void toggleHistoryWindow();
     void toggleSideBar();
-    void handleModeChange(const QString& mode);  // ĞÂÔöÄ£Ê½´¦Àí²Ûº¯Êı
-    //void updateHistoryDisplay();
+    void handleModeChange(const QString &mode);  //æ¨¡å¼å¤„ç†æ§½å‡½æ•°
+    void handleSquare();   
+    void handleSqrt();  
+    void handleAbs();
 
 private:
     void setupUI();
-   // void createButtons();
-    QPushButton* createButton(const QString& text, const char* member);
     void updatePopupLayout();
-    bool eventFilter(QObject* obj, QEvent* event);
-
-    // ¼ÆËãÂß¼­Ïà¹Ø
+    void setupModules();
+    void setupKeyboardLayout();
+    bool eventFilter(QObject* obj, QEvent *event);
+    // è®¡ç®—é€»è¾‘ç›¸å…³
     bool isOperator(QChar c);
+    bool isNumber(const QString &expr);
     double evaluateExpression(QString expr);
     bool hasPriority(QChar op1, QChar op2);
-    void calculateStep(QStack<double>& nums, QStack<QChar>& ops);
-
-    void setupStandardUI();     // ±ê×¼Ä£Ê½½çÃæ
-    void setupScientificUI();   // ¿ÆÑ§Ä£Ê½½çÃæ£¨Õ¼Î»ÊµÏÖ£©
-    //void clearCurrentUI();      // ÇåÀíµ±Ç°½çÃæ
-    void setupModules();
-
-    NumberPad* m_standardPad; // ±ê×¼Ä£Ê½¼üÅÌ
-    NumberPad* m_scientificPad; // ¿ÆÑ§Ä£Ê½¼üÅÌ
-  
-    Sidebar* m_pSideBar;
-    TopBar* m_pTopBar;
-    HistoryPopup* m_historyPopup;
-    HistoryManager m_historyManager;
-    QTextEdit* m_pDisplay;
-    //QWidget* keyboardArea;
-    QStackedWidget* m_keyboardStack; // ĞÂÔö¶Ñµş²¼¾ÖÈİÆ÷
-    QWidget* m_overlay;
+    void calculateStep(QStack<double> &nums, QStack<QChar> &ops);
+    bool m_hasCalcError = false;
     QString m_calcErrorMsg;
     QString m_expression;
-    bool m_hasCalcError = false;
     QString m_lastValidExpression;
-    QWidget* m_pScientificPanel = nullptr;  // ¿ÆÑ§Ä£Ê½Ãæ°å
-    void setupKeyboardLayout(); // ĞÂÔö·½·¨
-    NumberPad* m_currentPad = nullptr; // µ±Ç°¼üÅÌÊµÀı
     QString  m_currentMode;
+    HistoryManager m_historyManager;
+    BasicPad *m_pCurrentPad = nullptr; // å½“å‰é”®ç›˜å®ä¾‹
+    StandardPad *m_pStandardPad=nullptr; // æ ‡å‡†æ¨¡å¼é”®ç›˜
+    ScientificPad *m_pScientificPad=nullptr; // ç§‘å­¦æ¨¡å¼é”®ç›˜
+    Sidebar *m_pSideBar=nullptr;
+    TopBar *m_pTopBar=nullptr;
+    HistoryPopup *m_pHistoryPopup=nullptr;
+    QTextEdit *m_pDisplay=nullptr;
+    QStackedWidget *m_pKeyboardStack=nullptr; // å †å å¸ƒå±€å®¹å™¨
+    QWidget *m_pOverlay=nullptr;
 };
-
 #endif // CALCULATOR_H

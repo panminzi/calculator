@@ -1,11 +1,11 @@
-// historymanager.cpp
 #include "historymanager.h"
 
-HistoryManager::HistoryManager(QObject* parent)
+HistoryManager::HistoryManager(QObject *parent)
     : QObject(parent)
-{}
+{
+}
 
-void HistoryManager::addEntry(const QString& entry)
+void HistoryManager::addEntry(const QString &entry)
 {
     m_history.prepend(entry);
     if (m_history.size() > MAX_HISTORY) m_history.removeLast();

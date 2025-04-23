@@ -76,10 +76,10 @@ static const uint qt_meta_data_NumberPad[] = {
        0        // eod
 };
 
-void NumberPad::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void BasicPad::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        NumberPad *_t = static_cast<NumberPad *>(_o);
+        BasicPad *_t = static_cast<BasicPad *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->digitClicked((*reinterpret_cast< QString(*)>(_a[1]))); break;
@@ -91,29 +91,29 @@ void NumberPad::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            typedef void (NumberPad::*_t)(QString );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&NumberPad::digitClicked)) {
+            typedef void (BasicPad::*_t)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&BasicPad::digitClicked)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (NumberPad::*_t)(QString );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&NumberPad::operatorClicked)) {
+            typedef void (BasicPad::*_t)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&BasicPad::operatorClicked)) {
                 *result = 1;
                 return;
             }
         }
         {
-            typedef void (NumberPad::*_t)();
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&NumberPad::equalClicked)) {
+            typedef void (BasicPad::*_t)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&BasicPad::equalClicked)) {
                 *result = 2;
                 return;
             }
         }
         {
-            typedef void (NumberPad::*_t)(QString );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&NumberPad::controlClicked)) {
+            typedef void (BasicPad::*_t)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&BasicPad::controlClicked)) {
                 *result = 3;
                 return;
             }
@@ -121,18 +121,18 @@ void NumberPad::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
     }
 }
 
-const QMetaObject NumberPad::staticMetaObject = {
+const QMetaObject BasicPad::staticMetaObject = {
     { &QWidget::staticMetaObject, qt_meta_stringdata_NumberPad.data,
       qt_meta_data_NumberPad,  qt_static_metacall, nullptr, nullptr}
 };
 
 
-const QMetaObject *NumberPad::metaObject() const
+const QMetaObject *BasicPad::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *NumberPad::qt_metacast(const char *_clname)
+void *BasicPad::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_NumberPad.stringdata0))
@@ -140,7 +140,7 @@ void *NumberPad::qt_metacast(const char *_clname)
     return QWidget::qt_metacast(_clname);
 }
 
-int NumberPad::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int BasicPad::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
@@ -158,27 +158,27 @@ int NumberPad::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void NumberPad::digitClicked(QString _t1)
+void BasicPad::digitClicked(QString _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void NumberPad::operatorClicked(QString _t1)
+void BasicPad::operatorClicked(QString _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
-void NumberPad::equalClicked()
+void BasicPad::equalClicked()
 {
     QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
 }
 
 // SIGNAL 3
-void NumberPad::controlClicked(QString _t1)
+void BasicPad::controlClicked(QString _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 3, _a);

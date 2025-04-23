@@ -1,20 +1,17 @@
-// historypopup.h
 #ifndef HISTORYPOPUP_H
 #define HISTORYPOPUP_H
 
 #include <QWidget>
 #include <QListWidget>
-
-class QPushButton;
-class QVBoxLayout;
+#include <QPushButton>
+#include <QVBoxLayout>
 
 class HistoryPopup : public QWidget
 {
     Q_OBJECT
 public:
-    explicit HistoryPopup(QWidget* parent = nullptr);
-
-    void updateHistory(const QStringList& history);
+    explicit HistoryPopup(QWidget *parent = nullptr);
+    void updateHistory(const QStringList &history);
     void updateFontSize(int fontSize);
 
 public slots:
@@ -27,9 +24,7 @@ signals:
 
 private:
     void setupUI();
-
-    QListWidget* m_pHistoryList;
-    QPushButton* m_pClearHistoryBtn;
+    QListWidget *m_pHistoryList;
+    QPushButton *m_pClearHistoryBtn;
 };
-
 #endif // HISTORYPOPUP_H

@@ -1,11 +1,12 @@
-// sidebar.cpp
-#include "sidebar.h"
 #include <QVBoxLayout>
 #include <QMouseEvent>
-#include<QPushButton>
+#include <QPushButton>
 
-Sidebar::Sidebar(QWidget* parent)
-    : QWidget(parent, Qt::Popup | Qt::FramelessWindowHint), m_parent(parent)
+#include "sidebar.h"
+
+Sidebar::Sidebar(QWidget *parent)
+    : QWidget(parent, Qt::Popup | Qt::FramelessWindowHint)
+    , m_parent(parent)
 {
     setStyleSheet(R"(
         QWidget {
@@ -15,14 +16,8 @@ Sidebar::Sidebar(QWidget* parent)
             padding: 0;
         }
     )");
-    // 样式设置
-   // setStyleSheet(R"(
-  //  background: white;
-  //  border-radius: 0 8px 8px 0;
-   // padding-top: 5px;
-//)");
     // 添加关闭按钮
-    QPushButton* closeBtn = new QPushButton(this);
+    QPushButton *closeBtn = new QPushButton(this);
     closeBtn->setIcon(QIcon(":/calculator/images/icon_menu.png"));
     closeBtn->setFlat(true);
     closeBtn->setFixedSize(32, 32);
@@ -37,19 +32,14 @@ Sidebar::Sidebar(QWidget* parent)
             border-radius: 16px;
         }
     )");
-    //closeBtn->setIconSize(QSize(size - 8, size - 8));
     connect(closeBtn, &QPushButton::clicked, this, &Sidebar::hideSidebar);
-
     // 调整布局
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     QHBoxLayout* headerLayout = new QHBoxLayout;
     headerLayout->addWidget(closeBtn, 0, Qt::AlignLeft);
     headerLayout->addStretch();
-
     mainLayout->addLayout(headerLayout);
-  
-    mainLayout->setContentsMargins(5, 5, 5, 5); // 增加边距
-
+    mainLayout->setContentsMargins(5, 5, 5, 5); 
     // 菜单列表
     m_pMenuList = new QListWidget(this);
     m_pMenuList->setStyleSheet(R"(
@@ -64,7 +54,7 @@ Sidebar::Sidebar(QWidget* parent)
         background: white;
         border: none;
         margin: 0;
-        padding: 12px 24px;
+        padding: 5px 5px;
     }
     QListWidget::item:hover {
         background: #F5F5F5;
@@ -82,20 +72,18 @@ Sidebar::Sidebar(QWidget* parent)
         border-radius: 3px;
     }
 )");
-
     mainLayout->addWidget(m_pMenuList);
-    mainLayout->setContentsMargins(5, 5, 5, 5); // 增加边距
-
+    mainLayout->setContentsMargins(5, 5, 5, 5); 
     parent->installEventFilter(this);
     hide();
 }
 
-void Sidebar::addMenuItem(const QString& text, const QIcon& icon)
+void Sidebar::addMenuItem(const QString &text, const QIcon &icon)
 {
-    QListWidgetItem* item = new QListWidgetItem(icon, text);
+    QListWidgetItem *item = new QListWidgetItem(icon, text);
     item->setSizeHint(QSize(0, 40));
     m_pMenuList->addItem(item);
-    connect(m_pMenuList, &QListWidget::itemClicked, [this](QListWidgetItem* item) {
+    connect(m_pMenuList, &QListWidget::itemClicked, [this](QListWidgetItem *item) {
         emit itemClicked(item->text());
         hide();
         });
@@ -116,19 +104,22 @@ void Sidebar::hideSidebar()
 
 void Sidebar::updatePosition()
 {
-    if (m_parent) {
+    if (m_parent)
+    {
         int sidebarWidth = m_parent->width() * 0.35;
         setFixedSize(sidebarWidth, m_parent->height());
         move(m_parent->mapToGlobal(QPoint(0, 0)));
     }
 }
 
-bool Sidebar::eventFilter(QObject* obj, QEvent* event)
+bool Sidebar::eventFilter(QObject *obj, QEvent *event)
 {
     // 点击外部区域关闭
-    if (event->type() == QEvent::MouseButtonPress && !this->isHidden()) {
+    if (event->type() == QEvent::MouseButtonPress && !this->isHidden()) 
+    {
         QPoint mousePos = static_cast<QMouseEvent*>(event)->globalPos();
-        if (!geometry().contains(mousePos)) {
+        if (!geometry().contains(mousePos)) 
+        {
             hide();
             return true;
         }

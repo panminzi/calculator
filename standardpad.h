@@ -1,10 +1,16 @@
+#ifndef ATANDARDPAD_H
+#define ATANDARDPAD_H
 
-#pragma once
-#include "numberpad.h"
-
-class StandardPad : public NumberPad {
+#include "basicpad.h"
+class StandardPad : public BasicPad
+{
     Q_OBJECT
 public:
-    explicit StandardPad(QWidget* parent = nullptr);
-    void createSpecialButtons() override; // 实现基类虚函数
+    explicit StandardPad(QWidget *parent = nullptr);
+    void moveBasicButtons(int offsetRow, int offsetColumn);
+    void createSpecialButtons() override; 
+    
 };
+#endif // !ATANDARDPAD_H
+
+

@@ -52,7 +52,7 @@
     <ClCompile Include="sidebar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="numberpad.cpp">
+    <ClCompile Include="basicpad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="standardpad.cpp">
@@ -75,7 +75,7 @@
     <QtMoc Include="sidebar.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="numberpad.h">
+    <QtMoc Include="basicpad.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="scientificpad.h">

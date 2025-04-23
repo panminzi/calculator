@@ -63,7 +63,7 @@ void StandardPad::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
 }
 
 const QMetaObject StandardPad::staticMetaObject = {
-    { &NumberPad::staticMetaObject, qt_meta_stringdata_StandardPad.data,
+    { &BasicPad::staticMetaObject, qt_meta_stringdata_StandardPad.data,
       qt_meta_data_StandardPad,  qt_static_metacall, nullptr, nullptr}
 };
 
@@ -78,12 +78,12 @@ void *StandardPad::qt_metacast(const char *_clname)
     if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_StandardPad.stringdata0))
         return static_cast<void*>(this);
-    return NumberPad::qt_metacast(_clname);
+    return BasicPad::qt_metacast(_clname);
 }
 
 int StandardPad::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = NumberPad::qt_metacall(_c, _id, _a);
+    _id = BasicPad::qt_metacall(_c, _id, _a);
     return _id;
 }
 QT_WARNING_POP

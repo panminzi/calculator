@@ -1,9 +1,9 @@
-// historypopup.cpp
-#include "historypopup.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 
-HistoryPopup::HistoryPopup(QWidget* parent)
+#include "historypopup.h"
+
+HistoryPopup::HistoryPopup(QWidget *parent)
     : QWidget(parent, Qt::Popup | Qt::FramelessWindowHint)
 {
     setupUI();
@@ -12,14 +12,11 @@ HistoryPopup::HistoryPopup(QWidget* parent)
 void HistoryPopup::setupUI()
 {
     setStyleSheet("background: white; border-radius: 8px 8px 0 0;");
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-
     m_pHistoryList = new QListWidget;
     m_pHistoryList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    m_pClearHistoryBtn = new QPushButton(u8"Çå³ýÀúÊ·");
+    m_pClearHistoryBtn = new QPushButton("clear history");
     m_pClearHistoryBtn->setFixedHeight(50);
     m_pClearHistoryBtn->setStyleSheet(
         "QPushButton {"
@@ -28,7 +25,6 @@ void HistoryPopup::setupUI()
         "}"
         "QPushButton:hover { background: #FF4444; }"
     );
-
     layout->addWidget(m_pHistoryList, 8);
     layout->addWidget(m_pClearHistoryBtn, 2);
     connect(m_pClearHistoryBtn, &QPushButton::clicked, this, &HistoryPopup::clearRequested);
@@ -36,8 +32,9 @@ void HistoryPopup::setupUI()
 
 void HistoryPopup::showPopup()
 {
-    QWidget* parent = qobject_cast<QWidget*>(this->parent());
-    if (!parent) return;
+    QWidget *parent = qobject_cast<QWidget*>(this->parent());
+    if (!parent)
+        return;
     QRect rect = parent->geometry();
     rect.setTop(rect.bottom() - parent->height() / 2);
     setGeometry(rect);
@@ -50,7 +47,7 @@ void HistoryPopup::hidePopup()
     emit closed();
 }
 
-void HistoryPopup::updateHistory(const QStringList& history)
+void HistoryPopup::updateHistory(const QStringList &history)
 {
     m_pHistoryList->clear();
     m_pHistoryList->addItems(history);

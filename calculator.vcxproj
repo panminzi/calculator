@@ -93,7 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="historymanager.cpp" />
-    <ClCompile Include="numberpad.cpp" />
+    <ClCompile Include="basicpad.cpp" />
     <ClCompile Include="scientificpad.cpp" />
     <ClCompile Include="sidebar.cpp" />
     <ClCompile Include="standardpad.cpp" />
@@ -114,7 +114,7 @@
     <QtMoc Include="sidebar.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="numberpad.h" />
+    <QtMoc Include="basicpad.h" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="scientificpad.h" />

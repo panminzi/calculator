@@ -1,4 +1,3 @@
-// sidebar.h
 #ifndef SIDEBAR_H
 #define SIDEBAR_H
 
@@ -9,13 +8,13 @@ class Sidebar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Sidebar(QWidget* parent = nullptr);
+    explicit Sidebar(QWidget *parent = nullptr);
 
     void updatePosition();
-    void addMenuItem(const QString& text, const QIcon& icon = QIcon());
+    void addMenuItem(const QString &text, const QIcon &icon = QIcon());
 
 signals:
-    void itemClicked(const QString& text);
+    void itemClicked(const QString &text);
     void closed();
 
 public slots:
@@ -23,11 +22,9 @@ public slots:
     void hideSidebar();
 
 protected:
-    bool eventFilter(QObject* obj, QEvent* event) override;
-
+    bool eventFilter(QObject *obj, QEvent *event) override;
 private:
-    QListWidget* m_pMenuList;
-    QWidget* m_parent;
+    QListWidget *m_pMenuList;
+    QWidget *m_parent;
 };
-
 #endif // SIDEBAR_H

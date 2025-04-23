@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Calculator_t {
-    QByteArrayData data[13];
-    char stringdata0[152];
+    QByteArrayData data[16];
+    char stringdata0[186];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,14 +43,18 @@ QT_MOC_LITERAL(8, 80, 15), // "clearExpression"
 QT_MOC_LITERAL(9, 96, 19), // "toggleHistoryWindow"
 QT_MOC_LITERAL(10, 116, 13), // "toggleSideBar"
 QT_MOC_LITERAL(11, 130, 16), // "handleModeChange"
-QT_MOC_LITERAL(12, 147, 4) // "mode"
+QT_MOC_LITERAL(12, 147, 4), // "mode"
+QT_MOC_LITERAL(13, 152, 12), // "handleSquare"
+QT_MOC_LITERAL(14, 165, 10), // "handleSqrt"
+QT_MOC_LITERAL(15, 176, 9) // "handleAbs"
 
     },
     "Calculator\0digitClicked\0\0digit\0"
     "operatorClicked\0op\0equalClicked\0"
     "backspaceClicked\0clearExpression\0"
     "toggleHistoryWindow\0toggleSideBar\0"
-    "handleModeChange\0mode"
+    "handleModeChange\0mode\0handleSquare\0"
+    "handleSqrt\0handleAbs"
 };
 #undef QT_MOC_LITERAL
 
@@ -60,7 +64,7 @@ static const uint qt_meta_data_Calculator[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -68,14 +72,17 @@ static const uint qt_meta_data_Calculator[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   54,    2, 0x08 /* Private */,
-       4,    1,   57,    2, 0x08 /* Private */,
-       6,    0,   60,    2, 0x08 /* Private */,
-       7,    0,   61,    2, 0x08 /* Private */,
-       8,    0,   62,    2, 0x08 /* Private */,
-       9,    0,   63,    2, 0x08 /* Private */,
-      10,    0,   64,    2, 0x08 /* Private */,
-      11,    1,   65,    2, 0x08 /* Private */,
+       1,    1,   69,    2, 0x08 /* Private */,
+       4,    1,   72,    2, 0x08 /* Private */,
+       6,    0,   75,    2, 0x08 /* Private */,
+       7,    0,   76,    2, 0x08 /* Private */,
+       8,    0,   77,    2, 0x08 /* Private */,
+       9,    0,   78,    2, 0x08 /* Private */,
+      10,    0,   79,    2, 0x08 /* Private */,
+      11,    1,   80,    2, 0x08 /* Private */,
+      13,    0,   83,    2, 0x08 /* Private */,
+      14,    0,   84,    2, 0x08 /* Private */,
+      15,    0,   85,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QString,    3,
@@ -86,6 +93,9 @@ static const uint qt_meta_data_Calculator[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -104,6 +114,9 @@ void Calculator::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 5: _t->toggleHistoryWindow(); break;
         case 6: _t->toggleSideBar(); break;
         case 7: _t->handleModeChange((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 8: _t->handleSquare(); break;
+        case 9: _t->handleSqrt(); break;
+        case 10: _t->handleAbs(); break;
         default: ;
         }
     }
@@ -134,13 +147,13 @@ int Calculator::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 11)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 8;
+        _id -= 11;
     }
     return _id;
 }
